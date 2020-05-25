@@ -2,20 +2,119 @@ import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:4001";
 
-function App() {
-  const [response, setResponse] = useState("");
+type Coordinate = {
+  x: number;
+  y: number;
+};
 
-  useEffect(() => {
-    const socket = socketIOClient(ENDPOINT);
-    socket.on("FromAPI", (data: string) => {
-      setResponse(data);
-    });
+function App() {
+  const canvasRef = React.useRef<HTMLCanvasElement>(null);
+  //   const [response, setResponse] = useState("");
+  const [mousePosition, setMousePosition] = useState<Coordinate | undefined>(
+    undefined
+  );
+  const [isPainting, setIsPainting] = React.useState(false);
+
+  const startPaint = React.useCallback((event: MouseEvent) => {
+    const coordinates = getCoordinates(event);
+    if (coordinates) {
+      setMousePosition(coordinates);
+      setIsPainting(true);
+    }
   }, []);
 
+  useEffect(() => {
+    if (!canvasRef.current) {
+      return;
+    }
+    const canvas: HTMLCanvasElement = canvasRef.current;
+    canvas.addEventListener("mousedown", startPaint);
+    return () => {
+      canvas.removeEventListener("mousedown", startPaint);
+    };
+  }, [startPaint]);
+
+  const paint = React.useCallback(
+    (event: MouseEvent) => {
+      if (isPainting) {
+        const newMousePosition = getCoordinates(event);
+        if (mousePosition && newMousePosition) {
+          drawLine(mousePosition, newMousePosition);
+          setMousePosition(newMousePosition);
+        }
+      }
+    },
+    [isPainting, mousePosition]
+  );
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      return;
+    }
+    const canvas: HTMLCanvasElement = canvasRef.current;
+    canvas.addEventListener("mousemove", paint);
+    return () => {
+      canvas.removeEventListener("mousemove", paint);
+    };
+  }, [paint]);
+
+  const exitPaint = React.useCallback(() => {
+    setIsPainting(false);
+    setMousePosition(undefined);
+  }, []);
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      return;
+    }
+    const canvas: HTMLCanvasElement = canvasRef.current;
+    canvas.addEventListener("mouseup", exitPaint);
+    canvas.addEventListener("mouseleave", exitPaint);
+    return () => {
+      canvas.removeEventListener("mouseup", exitPaint);
+      canvas.removeEventListener("mouseleave", exitPaint);
+    };
+  }, [exitPaint]);
+
+  const getCoordinates = (event: MouseEvent): Coordinate | undefined => {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    const canvas: HTMLCanvasElement = canvasRef.current;
+    return {
+      x: event.pageX - canvas.offsetLeft,
+      y: event.pageY - canvas.offsetTop,
+    };
+  };
+
+  const drawLine = (
+    originalMousePosition: Coordinate,
+    newMousePosition: Coordinate
+  ) => {
+    if (!canvasRef.current) {
+      return;
+    }
+    const canvas: HTMLCanvasElement = canvasRef.current;
+    const context = canvas.getContext("2d");
+    if (context) {
+      context.strokeStyle = "red";
+      context.lineJoin = "round";
+      context.lineWidth = 5;
+
+      context.beginPath();
+      context.moveTo(originalMousePosition.x, originalMousePosition.y);
+      context.lineTo(newMousePosition.x, newMousePosition.y);
+      context.closePath();
+
+      context.stroke();
+    }
+  };
+
   return (
-    <p>
-      It's <time dateTime={response}>{response}</time>
-    </p>
+    <>
+      <canvas ref={canvasRef} width={800} height={800} />
+    </>
   );
 }
 
