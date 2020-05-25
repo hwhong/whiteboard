@@ -1,8 +1,5 @@
-const express = require("express");
-const app = express();
+const io = require("socket.io")(3000);
 
-app.listen(2000, (error) => {
-  if (error) {
-    console.log(error);
-  }
+io.on("connection", (socket) => {
+  socket.emit("message", "Hello World");
 });
