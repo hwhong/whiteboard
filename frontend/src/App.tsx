@@ -10,11 +10,11 @@ type Coordinate = {
 
 function App() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  //   const [response, setResponse] = useState("");
   const [mousePosition, setMousePosition] = useState<Coordinate | undefined>(
     undefined
   );
   const [isPainting, setIsPainting] = React.useState(false);
+  const [strokes, setStrokes] = React.useState<Coordinate[]>([]);
 
   const startPaint = React.useCallback((event: MouseEvent) => {
     const coordinates = getCoordinates(event);
@@ -43,6 +43,8 @@ function App() {
         if (mousePosition && newMousePosition) {
           drawLine(mousePosition, newMousePosition);
           setMousePosition(newMousePosition);
+
+          setStrokes([...strokes, newMousePosition]);
         }
       }
     },
@@ -55,6 +57,9 @@ function App() {
     }
     const canvas: HTMLCanvasElement = canvasRef.current;
     canvas.addEventListener("mousemove", paint);
+
+    // emit the strokes
+    socket.emit("emit-strokes", strokes);
     return () => {
       canvas.removeEventListener("mousemove", paint);
     };
