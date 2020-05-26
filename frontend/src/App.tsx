@@ -3,10 +3,15 @@ import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:4001";
 const socket = socketIOClient(ENDPOINT);
 
-type Coordinate = {
+interface Coordinate {
   x: number;
   y: number;
-};
+}
+
+interface User {
+  color: string;
+  strokes: Coordinate[];
+}
 
 function App() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
