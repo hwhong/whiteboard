@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import socketIOClient from "socket.io-client";
 const ENDPOINT = "http://127.0.0.1:4001";
+const socket = socketIOClient(ENDPOINT);
 
 type Coordinate = {
   x: number;
@@ -29,6 +30,7 @@ function App() {
     }
     const canvas: HTMLCanvasElement = canvasRef.current;
     canvas.addEventListener("mousedown", startPaint);
+
     return () => {
       canvas.removeEventListener("mousedown", startPaint);
     };
