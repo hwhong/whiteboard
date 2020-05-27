@@ -12,16 +12,17 @@ const io = socketIo(server);
 
 io.on("connection", (socket) => {
   console.log(`Client ${socket.id} is connected`);
-  const clients = socket.clients();
+  const clients = Object.keys(io.sockets.sockets);
 
   // once the user's drawing is recorded
   // emit to other uses
   socket.on("emit-strokes", (strokes) => {
-    clients.forEach((clientId) => {
-      if (socket.id !== clientId) {
-        socket.emit("receive-strokes", strokes);
-      }
-    });
+    // clients.forEach((clientId) => {
+    //   if (socket.id !== clientId) {
+    console.log(strokes);
+    socket.emit("receive-strokes", strokes);
+    //}
+    //});
   });
 
   socket.on("disconnect", () => {
