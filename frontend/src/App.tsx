@@ -22,16 +22,15 @@ function App() {
   const [strokes, setStrokes] = React.useState<Coordinate[]>([]);
 
   useEffect(() => {
-    socket.on("receive-strokes", (strokes: Coordinate[]) => {
-      console.log(strokes);
-      strokes.forEach((stroke, i, arr) => {
+    socket.on("receive-strokes", (resp) => {
+      console.log(resp);
+      resp.forEach((coord, i, arr) => {
         if (i <= arr.length - 2) {
-          drawLine(stroke[i], stroke[i + 1]);
-          console.log("gere");
+          drawLine(resp[i], resp[i + 1]);
         }
       });
     });
-  }, []);
+  });
 
   const startPaint = React.useCallback((event: MouseEvent) => {
     const coordinates = getCoordinates(event);
@@ -77,6 +76,7 @@ function App() {
 
     // emit the strokes
     socket.emit("emit-strokes", strokes);
+
     return () => {
       canvas.removeEventListener("mousemove", paint);
     };

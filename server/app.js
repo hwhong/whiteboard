@@ -19,8 +19,7 @@ io.on("connection", (socket) => {
   socket.on("emit-strokes", (strokes) => {
     // clients.forEach((clientId) => {
     //   if (socket.id !== clientId) {
-    console.log(strokes);
-    socket.emit("receive-strokes", strokes);
+    socket.broadcast.emit("receive-strokes", strokes);
     //}
     //});
   });
