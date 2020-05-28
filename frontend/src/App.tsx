@@ -124,7 +124,7 @@ function App() {
     const canvas: HTMLCanvasElement = canvasRef.current;
     const context = canvas.getContext("2d");
     if (context) {
-      context.strokeStyle = "red";
+      context.strokeStyle = "#2c2c2c";
       context.lineJoin = "round";
       context.lineWidth = 5;
 
