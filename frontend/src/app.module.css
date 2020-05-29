@@ -1,5 +1,26 @@
 .root {
+  flex-direction: column;
+  display: flex;
+}
+
+.canvas {
   background-color: #e5e5e5;
-  display: block;
   margin: 0 auto;
+}
+
+.container {
+  grid-template-columns: 1fr auto 1fr;
+  display: grid;
+}
+
+.left {
+  height: 100%;
+  margin-top: 38px;
+}
+
+.fakeText {
+  background-color: black;
+  padding: 20px;
+  height: 10px;
+  width: 20px;
 }

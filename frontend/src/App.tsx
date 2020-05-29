@@ -138,15 +138,20 @@ function App() {
   };
 
   return (
-    <>
+    <div className={styles.root}>
       <Toolbar />
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={600}
-        className={styles.root}
-      />
-    </>
+      <div className={styles.container}>
+        <div className={styles.left}>
+          <span className={styles.fakeText}> </span>
+        </div>
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={600}
+          className={styles.canvas}
+        />
+      </div>
+    </div>
   );
 }
 
