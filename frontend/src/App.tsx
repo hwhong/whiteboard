@@ -140,17 +140,13 @@ function App() {
   return (
     <div className={styles.root}>
       <Toolbar />
-      <div className={styles.container}>
-        <div className={styles.left}>
-          <span className={styles.fakeText}> </span>
-        </div>
-        <canvas
-          ref={canvasRef}
-          width={800}
-          height={600}
-          className={styles.canvas}
-        />
-      </div>
+
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        className={styles.canvas}
+      />
     </div>
   );
 }
